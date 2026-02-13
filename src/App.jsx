@@ -214,10 +214,11 @@ function ScratchCircle({ imageSrc, alt, done, onDone, shouldHighlightWin, showWi
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
+    const brushRadius = Math.max(12, rect.width * 0.16);
 
     ctx.globalCompositeOperation = "destination-out";
     ctx.beginPath();
-    ctx.arc(x, y, 15, 0, Math.PI * 2);
+    ctx.arc(x, y, brushRadius, 0, Math.PI * 2);
     ctx.fill();
 
     strokeCountRef.current += 1;
