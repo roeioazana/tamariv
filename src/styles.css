@@ -421,8 +421,7 @@ h1 {
   }
 
   100% {
-    transform: translate(-50%, -50%) translate3d(var(--flower-dx), var(--flower-dy), 280px)
-      scale(var(--flower-scale)) rotate(var(--flower-rotate));
+    transform: translate(-50%, -50%) translate3d(var(--flower-dx), var(--flower-dy), 280px) scale(var(--flower-scale)) rotate(var(--flower-rotate));
     opacity: 0;
   }
 }
@@ -438,7 +437,7 @@ h1 {
   }
 
   .scratch-circle {
-    width: min(36vw, 148px);
+    width: min(24vw, 148px);
   }
 }
 
