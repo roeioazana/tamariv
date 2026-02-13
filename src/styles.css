@@ -1,4 +1,4 @@
-﻿@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;600&display=swap");
 
 :root {
   color-scheme: light;
@@ -32,7 +32,23 @@ body {
   overflow: hidden;
 }
 
+.app-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.background-stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .scroller {
+  position: relative;
+  z-index: 2;
   height: 100vh;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
@@ -42,27 +58,24 @@ body {
 .screen {
   min-height: 100vh;
   padding: 20px;
-  position: relative;
   display: grid;
   place-items: center;
   scroll-snap-align: start;
 }
 
-.first-screen {
-  overflow: hidden;
-}
-
-.hero,
-.note-card {
-  width: min(100%, 420px);
+.glass-card {
+  width: min(100%, 440px);
   text-align: center;
   border: 1px solid rgba(127, 38, 71, 0.15);
   border-radius: 24px;
   padding: 24px 18px;
-  background: rgba(255, 252, 253, 0.7);
+  background: rgba(255, 252, 253, 0.68);
   backdrop-filter: blur(6px);
   box-shadow: 0 18px 40px rgba(120, 35, 70, 0.12);
-  z-index: 2;
+}
+
+.glass-card-scratch {
+  width: min(100%, 640px);
 }
 
 .eyebrow {
@@ -74,20 +87,12 @@ body {
   font-size: 0.74rem;
 }
 
-h1,
-h2 {
+h1 {
   margin: 0;
   font-family: "Fraunces", serif;
   color: #5b1733;
   line-height: 1.1;
-}
-
-h1 {
   font-size: clamp(1.8rem, 7vw, 2.5rem);
-}
-
-h2 {
-  font-size: clamp(1.6rem, 6vw, 2.2rem);
 }
 
 .subtitle {
@@ -96,16 +101,118 @@ h2 {
   font-size: 0.96rem;
 }
 
-.second-screen {
-  background: linear-gradient(180deg, rgba(255, 239, 246, 0.4), rgba(255, 227, 238, 0.9));
+.burst-button {
+  margin-top: 20px;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font: inherit;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  background: linear-gradient(180deg, #ff4f96, #f33e81);
+  color: #fff;
+  box-shadow: 0 14px 24px rgba(198, 34, 100, 0.35);
+  cursor: pointer;
+  transition: transform 150ms ease, box-shadow 150ms ease;
 }
 
-.rain-layer {
+.burst-button:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 18px 28px rgba(198, 34, 100, 0.4);
+}
+
+.burst-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.scratch-board-wrap {
+  margin-top: 18px;
+}
+
+.scratch-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  justify-items: center;
+}
+
+.scratch-circle {
+  position: relative;
+  width: min(28vw, 150px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(74, 22, 47, 0.32);
+  background: #d8d8d8;
+}
+
+.scratch-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.scratch-overlay {
   position: absolute;
   inset: 0;
-  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  touch-action: none;
+  cursor: grab;
+}
+
+.scratch-overlay-cleared {
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.scratch-progress {
+  margin: 12px 0 0;
+  color: #6f2646;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.scratch-win-text {
+  margin: 8px 0 0;
+  color: #1f8b3b;
+  font-size: clamp(1.2rem, 4vw, 1.6rem);
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(88, 212, 126, 0.48);
+  animation: winTextPulse 980ms ease-in-out infinite alternate;
+}
+
+.scratch-circle-winning::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #78ef90, #17ba57, #b4ff84, #78ef90);
+  animation: spinWinRing 900ms linear infinite;
+  z-index: 3;
+  mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+}
+
+.rain-layer,
+.peek-layer,
+.flower-burst-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.rain-layer,
+.peek-layer {
   overflow: hidden;
-  z-index: 1;
+}
+
+.peek-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
 }
 
 .drop {
@@ -119,14 +226,6 @@ h2 {
   animation-name: rainFall;
   animation-timing-function: linear;
   animation-fill-mode: both;
-}
-
-.peek-layer {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 3;
 }
 
 .peek-shot {
@@ -162,6 +261,43 @@ h2 {
 
 .peek-top {
   animation: peekTop 1900ms cubic-bezier(0.22, 0.92, 0.29, 1) both;
+}
+
+.flower-burst-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  perspective: 900px;
+  overflow: hidden;
+}
+
+.flower-pop {
+  position: absolute;
+  user-select: none;
+  opacity: 0;
+  filter: drop-shadow(0 8px 10px rgba(156, 24, 75, 0.18));
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  animation-name: flowerBurst;
+  animation-timing-function: cubic-bezier(0.14, 0.8, 0.25, 1);
+  animation-fill-mode: both;
+}
+
+@keyframes spinWinRing {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes winTextPulse {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.05);
+  }
 }
 
 @keyframes peekLeft {
@@ -270,13 +406,48 @@ h2 {
   }
 }
 
+@keyframes flowerBurst {
+  0% {
+    transform: translate(-50%, -50%) translate3d(0, 0, -220px) scale(0.2) rotate(0deg);
+    opacity: 0;
+  }
+
+  16% {
+    opacity: 1;
+  }
+
+  88% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) translate3d(var(--flower-dx), var(--flower-dy), 280px)
+      scale(var(--flower-scale)) rotate(var(--flower-rotate));
+    opacity: 0;
+  }
+}
+
+@media (max-width: 680px) {
+  .glass-card-scratch {
+    width: min(100%, 500px);
+  }
+
+  .scratch-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .scratch-circle {
+    width: min(36vw, 148px);
+  }
+}
+
 @media (max-width: 480px) {
   .screen {
     padding: 16px;
   }
 
-  .hero,
-  .note-card {
+  .glass-card {
     padding: 22px 16px;
     border-radius: 20px;
   }
