@@ -37,25 +37,25 @@ const SLIDES = [
     subtitle: "",
   },
   {
+    eyebrow: "I'm Partly Sorry",
+    title: "An Apology",
+    subtitle: "Since it's expensive to get you flowers in Guat, and we're going to spend so much in Costa (😍), I created this gift instead.",
+  },
+  {
     eyebrow: "",
-    title: "",
-    subtitle: "Since we are so far apart over the last few months, and we're not together on Valentine,\nI wanted to make something for you.",
+    title: "What is one of our favorite things to do together?",
+    subtitle: "",
   },
   {
     type: "scratch",
-    eyebrow: "Can You win?",
-    title: "Scratch Every Circle",
-    subtitle: "Scratch all 6 circles to reveal the photos and unlock the win moment.",
+    eyebrow: "A Scratch Game! (The thing we LOVE)",
+    title: "Can You Win?",
+    subtitle: "Scratch all 6 circles to reveal your prize!",
   },
   {
-    eyebrow: "Slide Four",
-    title: "A Thousand Tiny Moments",
-    subtitle: "Every card is a chapter, but the background story never stops.",
-  },
-  {
-    eyebrow: "Final Slide",
-    title: "Open The Flower Box",
-    subtitle: "Press the button and launch 20 flowers right toward you.",
+    eyebrow: "",
+    title: "To My Biggest Love",
+    subtitle: "Happy long-distance Valentines Day my love, I love you more than anything in this world ❤️",
     hasButton: true,
   },
 ];
@@ -290,7 +290,11 @@ function ScratchBoard() {
   const [scratchItems] = useState(() => shuffleArray(SCRATCH_ITEMS_BASE));
   const [doneMap, setDoneMap] = useState(() => scratchItems.map(() => false));
   const clearedCount = doneMap.filter(Boolean).length;
-  const allCleared = clearedCount === scratchItems.length;
+  const roeiClearedCount = scratchItems.reduce(
+    (count, item, index) => (item.highlight && doneMap[index] ? count + 1 : count),
+    0
+  );
+  const hasWon = roeiClearedCount === 3;
 
   const markDone = (index) => {
     setDoneMap((prev) => {
@@ -315,12 +319,12 @@ function ScratchBoard() {
             done={doneMap[index]}
             onDone={() => markDone(index)}
             shouldHighlightWin={item.highlight}
-            showWinState={allCleared}
+            showWinState={hasWon}
           />
         ))}
       </div>
       <p className="scratch-progress">{`${clearedCount}/6 scratched`}</p>
-      {allCleared ? <p className="scratch-win-text">You Won My Heart</p> : null}
+      {hasWon ? <p className="scratch-win-text">You Won My Heart</p> : null}
     </div>
   );
 }
@@ -447,7 +451,7 @@ export default function App() {
               {slide.type === "scratch" ? <ScratchBoard /> : null}
               {slide.hasButton ? (
                 <button ref={burstButtonRef} className="burst-button" type="button" onClick={handleFlowerBurst}>
-                  Release 20 Flowers
+                  Here you go
                 </button>
               ) : null}
             </article>
